@@ -20,7 +20,8 @@ import (
 func main() {
 
 	cliFlags := struct {
-		skipStdLib bool
+		skipStdLib    bool
+		skipTestFiles bool
 	}{}
 	app := &cli.App{
 		Flags: []cli.Flag{
@@ -28,6 +29,11 @@ func main() {
 				Name:        "skip-stdlib",
 				EnvVars:     []string{"SKIP_STDLIB"},
 				Destination: &cliFlags.skipStdLib,
+			},
+			&cli.BoolFlag{
+				Name:        "skip-testfiles",
+				EnvVars:     []string{"SKIP_TESTFILES"},
+				Destination: &cliFlags.skipTestFiles,
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -84,6 +90,12 @@ func main() {
 				packageFiles = append(packageFiles, pkg.EmbedFiles...)
 				packageFiles = append(packageFiles, pkg.OtherFiles...)
 				packageFiles = append(packageFiles, pkg.IgnoredFiles...)
+
+				if cliFlags.skipTestFiles {
+					packageFiles = lo.Filter(packageFiles, func(fn string, _ int) bool {
+						return !strings.HasSuffix(fn, "_test.go")
+					})
+				}
 
 				err = sortAndCopyFiles(sum, packageFiles)
 				if err != nil {
