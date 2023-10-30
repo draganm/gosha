@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 	"sort"
 	"strings"
 
@@ -81,7 +80,7 @@ func main() {
 					}
 				}
 
-				fmt.Println("package", packageName)
+				// fmt.Println("package", packageName)
 				sum.Write([]byte(packageName))
 				pkg := allPackages[packageName]
 
@@ -139,13 +138,13 @@ func copyFile(destination io.Writer, fileName string) error {
 		return fmt.Errorf("failed to copy %s: %w", fileName, err)
 	}
 
-	parts := strings.Split(fileName, "/")
+	// parts := strings.Split(fileName, "/")
 
-	if len(parts) > 4 {
-		parts = parts[len(parts)-4:]
-	}
+	// if len(parts) > 4 {
+	// 	parts = parts[len(parts)-4:]
+	// }
 
-	fmt.Println("copied", filepath.Join(parts...))
+	// fmt.Println("copied", filepath.Join(parts...))
 
 	return nil
 }
