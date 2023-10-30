@@ -105,8 +105,10 @@ func copyFile(destination io.Writer, fileName string) error {
 	defer f.Close()
 	_, err = io.Copy(destination, f)
 	if err != nil {
-		return fmt.Errorf("failed to copy %s: %w", err)
+		return fmt.Errorf("failed to copy %s: %w", fileName, err)
 	}
+
+	fmt.Println("copied", fileName)
 
 	return nil
 }
