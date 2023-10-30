@@ -1,4 +1,4 @@
-# Gosha: Go SHA256 Hash Generator
+# Gosha: Go SHA256 Hash Generator for Packages
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/draganm/gosha)](https://goreportcard.com/report/github.com/draganm/gosha)
 [![GoDoc](https://pkg.go.dev/badge/github.com/draganm/gosha)](https://pkg.go.dev/github.com/draganm/gosha)
