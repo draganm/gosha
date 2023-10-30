@@ -19,8 +19,17 @@ import (
 
 func main() {
 
+	cliFlags := struct {
+		skipStdLib bool
+	}{}
 	app := &cli.App{
-		Flags: []cli.Flag{},
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:        "skip-stdlib",
+				EnvVars:     []string{"SKIP_STDLIB"},
+				Destination: &cliFlags.skipStdLib,
+			},
+		},
 		Action: func(c *cli.Context) error {
 
 			packagePath := c.Args().First()
@@ -58,6 +67,15 @@ func main() {
 			sum := sha256.New()
 
 			for _, packageName := range packageNames {
+
+				parts := strings.Split(packageName, "/")
+				if len(parts) > 0 {
+					if cliFlags.skipStdLib && !strings.Contains(parts[0], ".") {
+						continue
+					}
+				}
+
+				fmt.Println("package", packageName)
 				sum.Write([]byte(packageName))
 				pkg := allPackages[packageName]
 
