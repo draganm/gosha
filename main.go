@@ -58,17 +58,16 @@ func main() {
 			for _, packageName := range packageNames {
 				sum.Write([]byte(packageName))
 				pkg := allPackages[packageName]
-				err = sortAndCopyFiles(sum, pkg.GoFiles)
+
+				packageFiles := []string{}
+				packageFiles = append(packageFiles, pkg.GoFiles...)
+				packageFiles = append(packageFiles, pkg.EmbedFiles...)
+				packageFiles = append(packageFiles, pkg.OtherFiles...)
+				packageFiles = append(packageFiles, pkg.IgnoredFiles...)
+
+				err = sortAndCopyFiles(sum, packageFiles)
 				if err != nil {
-					return fmt.Errorf("could not add go files: %w", err)
-				}
-				err = sortAndCopyFiles(sum, pkg.EmbedFiles)
-				if err != nil {
-					return fmt.Errorf("could not add embedded files: %w", err)
-				}
-				err = sortAndCopyFiles(sum, pkg.OtherFiles)
-				if err != nil {
-					return fmt.Errorf("could not add other files: %w", err)
+					return fmt.Errorf("could not sha package %s: %w", pkg.PkgPath, err)
 				}
 			}
 
