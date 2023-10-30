@@ -19,20 +19,20 @@ import (
 func main() {
 
 	cliFlags := struct {
-		skipStdLib    bool
-		skipTestFiles bool
+		includeStdlib    bool
+		includeTestFiles bool
 	}{}
 	app := &cli.App{
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
-				Name:        "skip-stdlib",
-				EnvVars:     []string{"SKIP_STDLIB"},
-				Destination: &cliFlags.skipStdLib,
+				Name:        "include-stdlib",
+				EnvVars:     []string{"INCLUDE_STDLIB"},
+				Destination: &cliFlags.includeStdlib,
 			},
 			&cli.BoolFlag{
-				Name:        "skip-testfiles",
-				EnvVars:     []string{"SKIP_TESTFILES"},
-				Destination: &cliFlags.skipTestFiles,
+				Name:        "include-testfiles",
+				EnvVars:     []string{"INCLUDE_TESTFILES"},
+				Destination: &cliFlags.includeTestFiles,
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -75,7 +75,7 @@ func main() {
 
 				parts := strings.Split(packageName, "/")
 				if len(parts) > 0 {
-					if cliFlags.skipStdLib && !strings.Contains(parts[0], ".") {
+					if !cliFlags.includeStdlib && !strings.Contains(parts[0], ".") {
 						continue
 					}
 				}
@@ -90,7 +90,7 @@ func main() {
 				packageFiles = append(packageFiles, pkg.OtherFiles...)
 				packageFiles = append(packageFiles, pkg.IgnoredFiles...)
 
-				if cliFlags.skipTestFiles {
+				if !cliFlags.includeTestFiles {
 					packageFiles = lo.Filter(packageFiles, func(fn string, _ int) bool {
 						return !strings.HasSuffix(fn, "_test.go")
 					})
