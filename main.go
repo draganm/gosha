@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/samber/lo"
 	"github.com/urfave/cli/v2"
@@ -107,7 +109,13 @@ func copyFile(destination io.Writer, fileName string) error {
 		return fmt.Errorf("failed to copy %s: %w", fileName, err)
 	}
 
-	fmt.Println("copied", fileName)
+	parts := strings.Split(fileName, "/")
+
+	if len(parts) > 4 {
+		parts = parts[len(parts)-4:]
+	}
+
+	fmt.Println("copied", filepath.Join(parts...))
 
 	return nil
 }
